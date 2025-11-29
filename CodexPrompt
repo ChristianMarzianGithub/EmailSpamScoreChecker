@@ -1,0 +1,230 @@
+Prompt for Codex — Email Spam Score Checker Web App
+
+PROMPT START
+
+Build a complete Email Spam Score Checker web application.
+
+Architecture
+
+Frontend: React + TypeScript + Vite
+
+Backend: Python (FastAPI) or Node.js (Express) — choose one and implement
+
+Styling: TailwindCSS
+
+Provide Dockerfiles for frontend and backend
+
+Provide docker-compose.yml
+
+App must be deployable on GCP Cloud Run (each service as its own container)
+
+Use a clean, organized folder structure.
+
+App Purpose
+
+The web app must evaluate an email’s “spam score” using multiple signals, returning a detailed explanation.
+
+It must accept either raw email content OR email headers, and compute a score based on:
+
+Signals
+
+SpamAssassin-style heuristics:
+
+excessive punctuation
+
+spammy keywords
+
+suspicious URLs
+
+all-caps subject lines
+
+poor HTML structure
+
+Header analysis:
+
+missing or malformed DKIM, SPF, or DMARC headers
+
+forged or mismatched From: / Return-Path:
+
+Received chain anomalies
+
+suspicious mail server fingerprints
+
+Domain reputation checks:
+
+backend must check known blocklists (public DNSBLs like Spamhaus ZEN)
+
+detect disposable email domains
+
+detect newly registered domains through WHOIS check (≤ 30 days)
+
+Link reputation check:
+
+extract URLs
+
+run DNS lookups on domains
+
+detect:
+
+IPs pointing to cheap VPS
+
+datacenter hosting
+
+blocklisted IPs
+
+Overall score:
+
+Return spam score from 0–100
+
+Provide category:
+
+SAFE (0–30)
+
+SUSPICIOUS (31–60)
+
+LIKELY SPAM (61–100)
+
+Frontend Requirements
+
+Main UI:
+
+Tabs or a mode selector:
+
+“Paste Email Content”
+
+“Paste Email Headers Only”
+
+Large text area input
+
+“Check Spam Score” button
+
+Results panel containing:
+
+Final numeric score
+
+Category color-coded badge
+
+List of triggered rules with explanations
+
+Extracted links (clickable)
+
+Header issues (highlighted)
+
+Include:
+
+Dark/light mode toggle
+
+Example test emails (3–5 spam samples + 1 legit sample)
+
+Local history saved in localStorage
+
+Display errors for:
+
+empty input
+
+invalid header format
+
+backend timeout
+
+Backend Requirements
+Endpoints
+1. POST /analyze
+
+Body:
+
+{
+  "raw": "full email content or headers"
+}
+
+
+Backend steps:
+
+Parse email using a proper parser (Python: email module, Node: mailparser)
+
+Extract:
+
+headers
+
+subject
+
+body (plain + HTML)
+
+URLs
+
+sender domain
+
+Run scoring modules:
+
+spam keyword scoring
+
+punctuation scoring
+
+HTML quality scoring
+
+link reputation
+
+domain age check (WHOIS)
+
+DNSBL blacklist check
+
+SPF/DKIM/DMARC header validation
+
+Return:
+
+{
+  "score": 72,
+  "category": "LIKELY_SPAM",
+  "rules_triggered": [
+    { "name": "SPAM_KEYWORDS", "points": 20, "info": "Found suspicious terms: 'viagra, casino'" },
+    { "name": "NO_DKIM", "points": 15, "info": "Missing DKIM signature" },
+    { "name": "NEW_DOMAIN", "points": 10, "info": "Domain registered 3 days ago" },
+    ...
+  ],
+  "links": ["http://example.bad"],
+  "headers": {
+    "spf": "fail",
+    "dkim": "missing",
+    "dmarc": "none"
+  }
+}
+
+
+Include full error handling:
+
+malformed email
+
+dependency failures
+
+invalid JSON
+
+DevOps & Deliverables
+
+Provide:
+
+Full frontend source code
+
+Full backend source code
+
+Dockerfile (frontend)
+
+Dockerfile (backend)
+
+docker-compose.yml
+
+Tailwind config, Vite config, tsconfig
+
+README explaining:
+
+local setup
+
+Docker workflow
+
+Cloud Run deployment steps
+
+Example inputs + sample outputs
+
+Thorough TypeScript types (frontend)
+
+Unit tests for backend analysis logic
+
+PROMPT END
